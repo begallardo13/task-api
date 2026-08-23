@@ -1,0 +1,223 @@
+openapi: 3.0.3
+
+info:
+  title: Task API
+  description: A RESTful API for managing tasks
+  version: 1.0.0
+  license:
+      name: MIT
+      url: https://opensource.org/license/mit/
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Tasks
+    description: Task management operations
+
+paths:
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      operationId: getTasks
+      summary: Get all tasks
+      description: Returns a list of all tasks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+                  
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'      
+
+    post:
+      tags:
+        - Tasks
+      operationId: createTask
+      summary: Create a task
+      description: Creates a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tasks/{id}:
+
+    get:
+      tags:
+        - Tasks
+      operationId: getTaskById  
+      summary: Get a task
+      description: Returns a specific task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Tasks
+      operationId: updateTask  
+      summary: Update a task
+      description: Updates an existing task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTask'
+
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Tasks
+      operationId: deleteTask  
+      summary: Delete a task
+      description: Deletes an existing task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: Task deleted successfully
+
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+
+  schemas:
+
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+      properties:
+        id:
+          type: integer
+          example: 1
+
+        title:
+          type: string
+          example: Learn REST APIs
+
+        completed:
+          type: boolean
+          example: false
+
+    CreateTask:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Learn OpenAPI
+
+    UpdateTask:
+      type: object
+      required:
+        - title
+        - completed
+      properties:
+        title:
+          type: string
+          example: Learn advanced REST APIs
+
+        completed:
+          type: boolean
+          example: true
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Task not found
