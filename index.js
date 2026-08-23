@@ -13,6 +13,13 @@ app.use(express.json()); // Allow Express to read JSON request bodies
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(taskRoutes); // Register our task routes with the application
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok'
+  });
+});
+
 app.use(errorHandler); // Register global error handling middleware
 
 module.exports = app; // Export the Express application for testing
